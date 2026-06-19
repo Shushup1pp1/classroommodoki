@@ -1,74 +1,238 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classroommodoki</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classroomもどき()</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f6f8fc;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<style>
+:root{
+    --primary:#4285f4;
+    --bg:#f6f8fc;
+    --text:#202124;
+}
 
-        .card {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            width: 320px;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
 
-        h1 {
-            margin-bottom: 30px;
-        }
+body{
+    background:var(--bg);
+    color:var(--text);
+}
 
-        button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+.hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:40px 20px;
+}
 
-        .signup {
-            background: #4285f4;
-            color: white;
-        }
+.hero h1{
+    font-size:4rem;
+    margin-bottom:20px;
+}
 
-        .login {
-            background: #34a853;
-            color: white;
-        }
+.hero .subtitle{
+    font-size:1.5rem;
+    color:#555;
+    margin-bottom:10px;
+}
 
-        button:hover {
-            opacity: 0.9;
-        }
-    </style>
+.hero .description{
+    max-width:700px;
+    line-height:1.8;
+    margin-bottom:30px;
+}
+
+.buttons{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+.btn{
+    text-decoration:none;
+    padding:14px 28px;
+    border-radius:10px;
+    font-size:1rem;
+    transition:0.2s;
+}
+
+.btn-primary{
+    background:var(--primary);
+    color:white;
+}
+
+.btn-secondary{
+    background:white;
+    color:var(--primary);
+    border:2px solid var(--primary);
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+section{
+    max-width:1100px;
+    margin:auto;
+    padding:80px 20px;
+}
+
+h2{
+    text-align:center;
+    margin-bottom:40px;
+    font-size:2rem;
+}
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border-radius:16px;
+    padding:25px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.card h3{
+    margin-bottom:10px;
+}
+
+.steps{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    max-width:700px;
+    margin:auto;
+}
+
+.step{
+    background:white;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.cta{
+    text-align:center;
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    color:#666;
+}
+</style>
 </head>
 <body>
 
-<div class="card">
-    <h1>Classroomもどき()</h1>
+<div class="hero">
+    <h1>📚 Classroomもどき()</h1>
 
-    <button class="signup"
-        onclick="location.href='signup.html'">
-        サインアップ
-    </button>
+    <p class="subtitle">
+        簡単、シンプル、便利。
+    </p>
 
-    <button class="login"
-        onclick="location.href='login.html'">
-        ログイン
-    </button>
+    <p class="description">
+        課題、配布、共有が手軽に一か所で。<br>
+        Classroomもどき()は、学校やグループでの情報共有を
+        もっと簡単にするためのシンプルなプラットフォームです。
+    </p>
+
+    <div class="buttons">
+        <a href="signup.html" class="btn btn-primary">サインアップ</a>
+        <a href="login.html" class="btn btn-secondary">サインイン</a>
+    </div>
 </div>
+
+<section>
+    <h2>✨ なにができる？</h2>
+
+    <div class="features">
+
+        <div class="card">
+            <h3>💬 チャット</h3>
+            <p>クラスメンバーとリアルタイムでやり取り。</p>
+        </div>
+
+        <div class="card">
+            <h3>📁 ファイル共有</h3>
+            <p>授業資料や提出物を簡単アップロード。</p>
+        </div>
+
+        <div class="card">
+            <h3>👥 クラス管理</h3>
+            <p>クラスを作成し、メンバーを招待。</p>
+        </div>
+
+        <div class="card">
+            <h3>📢 お知らせ</h3>
+            <p>重要な連絡をみんなに共有。</p>
+        </div>
+
+        <div class="card">
+            <h3>📝 課題</h3>
+            <p>配布から提出まで一か所で完結。</p>
+        </div>
+
+    </div>
+</section>
+
+<section>
+    <h2>🚀 How to Make Class?</h2>
+
+    <div class="steps">
+
+        <div class="step">
+            <h3>① サインアップ</h3>
+            <p>IDとパスワードを設定。30秒で開始できます。</p>
+        </div>
+
+        <div class="step">
+            <h3>② クラスを作成</h3>
+            <p>クラス名を入力するだけで作成完了。</p>
+        </div>
+
+        <div class="step">
+            <h3>③ メンバーを招待</h3>
+            <p>クラスコードを共有して簡単招待。</p>
+        </div>
+
+    </div>
+</section>
+
+<section class="cta">
+    <h2>🌟 さぁ、始めよう。</h2>
+
+    <p style="margin-bottom:30px;">
+        学習も、共有も、コミュニケーションも。<br>
+        すべてを一か所に。
+    </p>
+
+    <div class="buttons">
+        <a href="signup.html" class="btn btn-primary">サインアップ</a>
+        <a href="login.html" class="btn btn-secondary">サインイン</a>
+    </div>
+</section>
+
+<footer>
+    Classroomもどき() v0.1<br>
+    Powered by Supabase
+</footer>
 
 </body>
 </html>
+```
