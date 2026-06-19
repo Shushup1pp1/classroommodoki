@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroommodoki</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f8fc;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 320px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .signup {
+            background: #4285f4;
+            color: white;
+        }
+
+        .login {
+            background: #34a853;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Classroomもどき()</h1>
+
+    <button class="signup"
+        onclick="location.href='signup.html'">
+        サインアップ
+    </button>
+
+    <button class="login"
+        onclick="location.href='login.html'">
+        ログイン
+    </button>
+</div>
+
+</body>
+</html>
