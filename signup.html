@@ -1,0 +1,176 @@
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>サインアップ - Classroomもどき()</title>
+
+<style>
+:root{
+    --primary:#4285f4;
+    --bg:#f6f8fc;
+    --text:#202124;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:var(--bg);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    width:100%;
+    max-width:450px;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    text-align:center;
+}
+
+h1{
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#666;
+    margin-bottom:30px;
+    line-height:1.6;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    margin-bottom:15px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:var(--primary);
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.95;
+}
+
+.login-link{
+    margin-top:20px;
+    display:block;
+    text-decoration:none;
+    color:var(--primary);
+}
+
+.note{
+    margin-top:25px;
+    font-size:.9em;
+    color:#666;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>📚 Classroomもどき()</h1>
+
+    <p class="subtitle">
+        IDとパスワードだけで始めよう。<br>
+        面倒なメール認証はありません。
+    </p>
+
+    <input
+        id="username"
+        placeholder="ID"
+        maxlength="20"
+    >
+
+    <input
+        id="password"
+        type="password"
+        placeholder="パスワード"
+        maxlength="50"
+    >
+
+    <button onclick="signup()">
+        アカウント作成
+    </button>
+
+    <a href="login.html" class="login-link">
+        既にアカウントをお持ちですか？
+    </a>
+
+    <div class="note">
+        Classroomもどき() v0.1
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const supabase = window.supabase.createClient(
+    "https://iuizsupfouqqzfgynpcw.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE"
+);
+
+async function signup(){
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    if(!username){
+        alert("IDを入力してください");
+        return;
+    }
+
+    if(!password){
+        alert("パスワードを入力してください");
+        return;
+    }
+
+    const { error } = await supabase
+        .from("users")
+        .insert([
+            {
+                username: username,
+                password: password
+            }
+        ]);
+
+    if(error){
+        alert("そのIDは既に使用されている可能性があります");
+        console.error(error);
+        return;
+    }
+
+    alert("アカウント作成完了！");
+    location.href = "login.html";
+}
+</script>
+
+</body>
+</html>
+```
