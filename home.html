@@ -75,7 +75,7 @@ header{
             ➕ クラス作成
         </button>
 
-        <button class="button">
+        <button class="button" onclick="joinClass()">
             🚪 クラス参加
         </button>
     </div>
@@ -100,7 +100,54 @@ const supabaseClient = window.supabase.createClient(
     "https://iuizsupfouqqzfgynpcw.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE"
 );
+async function joinClass(){
 
+    const classCode =
+        prompt("クラスコードを入力");
+
+    if(!classCode){
+        return;
+    }
+
+    const sessionToken =
+        getCookie("session");
+
+    const { data: sessionData } =
+        await supabaseClient
+        .from("sessions")
+        .select("*")
+        .eq("session_token", sessionToken);
+
+    const username =
+        sessionData[0].username;
+
+    const { data: classData } =
+        await supabaseClient
+        .from("classes")
+        .select("*")
+        .eq("class_code", classCode);
+
+    if(classData.length === 0){
+
+        alert("クラスが見つかりません");
+
+        return;
+    }
+
+    await supabaseClient
+        .from("class_members")
+        .insert([
+            {
+                class_code: classCode,
+                username: username
+            }
+        ]);
+
+    alert("参加しました！");
+
+    loadClasses();
+
+}
 async function loadClasses(){
 
     const sessionToken =
