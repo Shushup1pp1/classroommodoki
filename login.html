@@ -215,12 +215,12 @@ if(sessionError){
 }
 
 document.cookie =
-    `session=${sessionToken};
-     max-age=2592000;
-     path=/`;
+    "session=" +
+    sessionToken +
+    "; path=/; max-age=2592000";
 
 alert("ログイン成功！");
-
+alert(document.cookie);
 location.href = "home.html";
 }
 window.login = login;
