@@ -100,7 +100,56 @@ const supabaseClient = window.supabase.createClient(
     "https://iuizsupfouqqzfgynpcw.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE"
 );
+async function createClass(){
 
+    const className =
+        prompt("クラス名を入力");
+
+    if(!className){
+        return;
+    }
+
+    const classCode =
+        crypto.randomUUID()
+        .replaceAll("-", "")
+        .substring(0, 6)
+        .toUpperCase();
+
+    const sessionToken =
+        getCookie("session");
+
+    const { data: sessionData } =
+        await supabaseClient
+        .from("sessions")
+        .select("*")
+        .eq("session_token", sessionToken);
+
+    const username =
+        sessionData[0].username;
+
+    const { error } =
+        await supabaseClient
+        .from("classes")
+        .insert([
+            {
+                class_name: className,
+                class_code: classCode,
+                owner_username: username
+            }
+        ]);
+
+    if(error){
+        console.error(error);
+        alert("作成失敗");
+        return;
+    }
+
+    alert(
+        "クラス作成完了！\n\n" +
+        "コード: " + classCode
+    );
+
+}
 function getCookie(name){
 
     const cookies =
