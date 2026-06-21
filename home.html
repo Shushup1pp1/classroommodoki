@@ -67,13 +67,13 @@ header{
     <div class="card">
         <h3>クラス</h3>
 
-        <p>
-            まだクラスがありません。
-        </p>
+        <div id="classList">
+            クラスがありません!あなたの教室に参加しましょう!
+        </div>
 
         <button class="button" onclick="createClass()">
-    ➕ クラス作成
-</button>
+            ➕ クラス作成
+        </button>
 
         <button class="button">
             🚪 クラス参加
@@ -100,6 +100,53 @@ const supabaseClient = window.supabase.createClient(
     "https://iuizsupfouqqzfgynpcw.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE"
 );
+
+async function loadClasses(){
+
+    const sessionToken =
+        getCookie("session");
+
+    const { data: sessionData } =
+        await supabaseClient
+        .from("sessions")
+        .select("*")
+        .eq("session_token", sessionToken);
+
+    const username =
+        sessionData[0].username;
+
+    const { data: classes } =
+        await supabaseClient
+        .from("classes")
+        .select("*")
+        .eq("owner_username", username);
+
+    const classList =
+        document.getElementById("classList");
+
+    if(classes.length === 0){
+
+        classList.innerHTML =
+            "まだクラスがありません";
+
+        return;
+    }
+
+    classList.innerHTML = "";
+
+    classes.forEach(cls => {
+
+        classList.innerHTML += `
+            <div class="card">
+                <h3>📚 ${cls.class_name}</h3>
+                <p>コード: ${cls.class_code}</p>
+            </div>
+        `;
+
+    });
+
+}
+    
 async function createClass(){
 
     const className =
@@ -214,7 +261,7 @@ async function logout(){
 }
 
 loadUser();
-
+loadClasses();
 </script>
 
 </body>
