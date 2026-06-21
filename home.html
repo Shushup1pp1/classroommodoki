@@ -184,11 +184,15 @@ async function loadClasses(){
     classes.forEach(cls => {
 
         classList.innerHTML += `
-            <div class="card">
-                <h3>📚 ${cls.class_name}</h3>
-                <p>コード: ${cls.class_code}</p>
-            </div>
-        `;
+    <div
+        class="card"
+        onclick="openClass('${cls.class_code}')"
+        style="cursor:pointer;"
+    >
+        <h3>📚 ${cls.class_name}</h3>
+        <p>コード: ${cls.class_code}</p>
+    </div>
+`;
 
     });
 
