@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ホーム - Classroomもどき()</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f6f8fc;
+}
+
+header{
+    background:#4285f4;
+    color:white;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.button{
+    background:#4285f4;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    margin:5px;
+}
+
+.button:hover{
+    opacity:.9;
+}
+
+.logout{
+    background:#e53935;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>📚 Classroomもどき()</h1>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2 id="welcome">読み込み中...</h2>
+        <p>おかえり!</p>
+    </div>
+
+    <div class="card">
+        <h3>クラス</h3>
+
+        <p>
+            まだクラスがありません。
+        </p>
+
+        <button class="button">
+            ➕ クラス作成
+        </button>
+
+        <button class="button">
+            🚪 クラス参加
+        </button>
+    </div>
+
+    <div class="card">
+        <h3>アカウント</h3>
+
+        <button
+            class="button logout"
+            onclick="logout()">
+            ログアウト
+        </button>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const supabaseClient = window.supabase.createClient(
+    "https://iuizsupfouqqzfgynpcw.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE"
+);
+
+function getCookie(name){
+
+    const cookies =
+        document.cookie.split("; ");
+
+    for(const cookie of cookies){
+
+        const [key,value] =
+            cookie.split("=");
+
+        if(key === name){
+            return value;
+        }
+    }
+
+    return null;
+}
+
+async function loadUser(){
+
+    const sessionToken =
+        getCookie("session");
+
+    if(!sessionToken){
+        location.href = "login.html";
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient
+        .from("sessions")
+        .select("*")
+        .eq("session_token", sessionToken);
+
+    if(error || data.length === 0){
+        location.href = "login.html";
+        return;
+    }
+
+    const username =
+        data[0].username;
+
+    document.getElementById("welcome")
+        .textContent =
+        `ようこそ、${username} さん！`;
+}
+
+async function logout(){
+
+    const sessionToken =
+        getCookie("session");
+
+    await supabaseClient
+        .from("sessions")
+        .delete()
+        .eq("session_token", sessionToken);
+
+    document.cookie =
+        "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+
+    location.href = "index.html";
+}
+
+loadUser();
+
+</script>
+
+</body>
+</html>
