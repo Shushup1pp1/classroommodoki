@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ログイン - Classroomもどき()</title>
+
+<style>
+:root{
+    --primary:#4285f4;
+    --bg:#f6f8fc;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:var(--bg);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    width:100%;
+    max-width:450px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    text-align:center;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    margin:10px 0;
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#4285f4;
+    color:white;
+    cursor:pointer;
+}
+
+a{
+    display:block;
+    margin-top:15px;
+}
+.cookie-banner{
+    position:fixed;
+    bottom:20px;
+    left:20px;
+    right:20px;
+
+    background:white;
+    border-radius:16px;
+
+    padding:16px;
+
+    box-shadow:0 4px 20px rgba(0,0,0,.15);
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+
+    z-index:9999;
+}
+
+.cookie-banner button{
+    background:#4285f4;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:10px;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+<div id="cookieBanner" class="cookie-banner">
+    <div>
+        🍪 当Webサイトはログイン状態の維持やサービス向上のためCookieを使用しています。
+    </div>
+
+    <button onclick="acceptCookies()">
+        OK
+    </button>
+</div>
+<div class="container">
+
+<h1>📚 Classroomもどき()</h1>
+
+<p>おかえりなさい。</p>
+
+<input
+    id="username"
+    placeholder="ID">
+
+<input
+    id="password"
+    type="password"
+    placeholder="パスワード">
+
+<button onclick="login()">
+    ログイン
+</button>
+
+<a href="signup.html">
+    アカウントを作成
+</a>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const supabaseClient = window.supabase.createClient(
+    "https://iuizsupfouqqzfgynpcw.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE"
+);
+function acceptCookies(){
+
+    localStorage.setItem(
+        "cookieAccepted",
+        "true"
+    );
+
+    document
+        .getElementById("cookieBanner")
+        .style.display = "none";
+}
+
+if(
+    localStorage.getItem("cookieAccepted")
+    === "true"
+){
+    document.addEventListener(
+        "DOMContentLoaded",
+        ()=>{
+            document
+                .getElementById("cookieBanner")
+                .style.display = "none";
+        }
+    );
+}
+async function login(){
+
+    const username =
+        document.getElementById("username").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    const { data, error } =
+        await supabaseClient
+        .from("users")
+        .select("*")
+        .eq("username", username)
+        .eq("password", password);
+
+    if(error){
+        console.error(error);
+        alert("ログイン失敗");
+        return;
+    }
+
+    if(data.length === 0){
+        alert("IDまたはパスワードが違います");
+        return;
+    }
+
+    document.cookie =
+        "username=" + username +
+        "; max-age=2592000; path=/";
+
+    alert("ログイン成功！");
+
+    location.href = "home.html";
+}
+
+window.login = login;
+
+</script>
+
+</body>
+</html>
