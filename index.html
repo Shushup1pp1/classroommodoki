@@ -232,7 +232,60 @@ footer{
     Powered by Supabase<br>
     2026 ©AquaWorks All rights reserved.
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+
+const supabaseClient = window.supabase.createClient(
+    "https://iuizsupfouqqzfgynpcw.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE"
+);
+
+function getCookie(name){
+
+    const cookies =
+        document.cookie.split("; ");
+
+    for(const cookie of cookies){
+
+        const [key, value] =
+            cookie.split("=");
+
+        if(key === name){
+            return value;
+        }
+    }
+
+    return null;
+}
+
+async function checkSession(){
+
+    const sessionToken =
+        getCookie("session");
+
+    if(!sessionToken){
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient
+        .from("sessions")
+        .select("*")
+        .eq("session_token", sessionToken);
+
+    if(error){
+        console.error(error);
+        return;
+    }
+
+    if(data.length > 0){
+        location.href = "home.html";
+    }
+}
+
+checkSession();
+
+</script>
 </body>
 </html>
-```
