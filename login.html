@@ -126,6 +126,21 @@ const supabaseClient = window.supabase.createClient(
     "https://iuizsupfouqqzfgynpcw.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE"
 );
+async function hashPassword(password){
+
+    const data = new TextEncoder().encode(password);
+
+    const hashBuffer =
+        await crypto.subtle.digest(
+            "SHA-256",
+            data
+        );
+
+    return Array
+        .from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
+}
 function acceptCookies(){
 
     localStorage.setItem(
@@ -159,12 +174,15 @@ async function login(){
     const password =
         document.getElementById("password").value;
 
+    const hashedPassword =
+    await hashPassword(password);
+
     const { data, error } =
         await supabaseClient
         .from("users")
         .select("*")
         .eq("username", username)
-        .eq("password", password);
+        .eq("password", hashedPassword);
 
     if(error){
         console.error(error);
@@ -177,14 +195,33 @@ async function login(){
         return;
     }
 
-    document.cookie =
-        "username=" + username +
-        "; max-age=2592000; path=/";
+const sessionToken =
+    crypto.randomUUID();
 
-    alert("ログイン成功！");
+const { error: sessionError } =
+    await supabaseClient
+    .from("sessions")
+    .insert([
+        {
+            session_token: sessionToken,
+            username: username
+        }
+    ]);
 
-    location.href = "home.html";
+if(sessionError){
+    console.error(sessionError);
+    alert("セッション作成失敗");
+    return;
 }
+
+document.cookie =
+    `session=${sessionToken};
+     max-age=2592000;
+     path=/`;
+
+alert("ログイン成功！");
+
+location.href = "home.html";
 
 window.login = login;
 
