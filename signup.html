@@ -152,7 +152,7 @@ async function signup(){
         document.getElementById("username").value.trim();
 
     const password =
-    await hashPassword(password);
+        document.getElementById("password").value.trim();
 
     if(!username){
         alert("IDを入力してください");
@@ -164,14 +164,17 @@ async function signup(){
         return;
     }
 
-    const { error } = await supabaseClient
-        .from("users")
-        .insert([
-            {
-                username: username,
-                password: hashedPassword
-            }
-        ]);
+    const hashedPassword =
+    await hashPassword(password);
+
+const { error } = await supabaseClient
+    .from("users")
+    .insert([
+        {
+            username: username,
+            password: hashedPassword
+        }
+    ]);
 
     if(error){
         alert("そのIDは既に使用されている可能性があります");
