@@ -197,7 +197,7 @@ async function login(){
 
 const sessionToken =
     crypto.randomUUID();
-
+console.log("Session:", sessionToken);
 const { error: sessionError } =
     await supabaseClient
     .from("sessions")
