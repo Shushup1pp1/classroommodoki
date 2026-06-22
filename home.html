@@ -233,15 +233,14 @@ async function createClass(){
         sessionData[0].username;
 
     const { error } =
-        await supabaseClient
-        .from("classes")
+       await supabaseClient
+        .from("class_members")
         .insert([
-            {
-                class_name: className,
-                class_code: classCode,
-                owner_username: username
-            }
-        ]);
+    {
+        class_code: classCode,
+        username: username
+    }
+]);
 
     if(error){
         console.error(error);
