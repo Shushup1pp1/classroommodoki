@@ -169,16 +169,16 @@ async function loadClasses(){
     const username =
         sessionData[0].username;
 
-    const { data: classes } =
+    const { data: memberships } =
         await supabaseClient
-        .from("classes")
+        .from("class_members")
         .select("*")
-        .eq("owner_username", username);
+        .eq("username", username);
 
     const classList =
         document.getElementById("classList");
 
-    if(classes.length === 0){
+    if(!memberships || memberships.length === 0){
 
         classList.innerHTML =
             "まだクラスがありません";
@@ -186,20 +186,31 @@ async function loadClasses(){
         return;
     }
 
+    const classCodes =
+        memberships.map(
+            m => m.class_code
+        );
+
+    const { data: classes } =
+        await supabaseClient
+        .from("classes")
+        .select("*")
+        .in("class_code", classCodes);
+
     classList.innerHTML = "";
 
     classes.forEach(cls => {
 
         classList.innerHTML += `
-    <div
-        class="card"
-        onclick="openClass('${cls.class_code}')"
-        style="cursor:pointer;"
-    >
-        <h3>📚 ${cls.class_name}</h3>
-        <p>コード: ${cls.class_code}</p>
-    </div>
-`;
+            <div
+                class="card"
+                onclick="openClass('${cls.class_code}')"
+                style="cursor:pointer;"
+            >
+                <h3>📚 ${cls.class_name}</h3>
+                <p>コード: ${cls.class_code}</p>
+            </div>
+        `;
 
     });
 
@@ -236,10 +247,10 @@ async function createClass(){
        await supabaseClient
         .from("class_members")
         .insert([
-    {
-        class_code: classCode,
-        username: username
-    }
+        {
+            class_code: classCode,
+            username: username
+        }
 ]);
 
     if(error){
