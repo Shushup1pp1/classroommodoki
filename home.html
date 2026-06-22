@@ -100,6 +100,13 @@ const supabaseClient = window.supabase.createClient(
     "https://iuizsupfouqqzfgynpcw.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE"
 );
+function openClass(classCode){
+
+    location.href =
+        "class.html?code=" +
+        encodeURIComponent(classCode);
+
+}
 async function joinClass(){
 
     const classCode =
