@@ -33,16 +33,32 @@ header{
     box-shadow:0 2px 10px rgba(0,0,0,.08);
 }
 
-.button{
+input,
+textarea{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    margin-bottom:10px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:15px;
+}
+
+textarea{
+    min-height:100px;
+    resize:vertical;
+}
+
+button{
     background:#4285f4;
     color:white;
     border:none;
-    border-radius:10px;
     padding:10px 16px;
+    border-radius:10px;
     cursor:pointer;
 }
 
-.button:hover{
+button:hover{
     opacity:.9;
 }
 
@@ -105,52 +121,67 @@ footer{
     </div>
 
     <div class="card">
+    <h2>📢 お知らせ</h2>
 
-        <h2 class="section-title">
-            📢 お知らせ
-        </h2>
+    <input id="announcementTitle"
+           placeholder="タイトル">
 
-        <p>
-            まだお知らせはありません。
-        </p>
+    <textarea
+        id="announcementContent"
+        placeholder="内容"></textarea>
 
-    </div>
+    <button onclick="postAnnouncement()">
+        投稿
+    </button>
 
-    <div class="card">
-
-        <h2 class="section-title">
-            💬 チャット
-        </h2>
-
-        <p>
-            チャット機能は準備中です。
-        </p>
-
-    </div>
+    <div id="announcementList"></div>
+</div>
 
     <div class="card">
+    <h2>💬 チャット</h2>
 
-        <h2 class="section-title">
-            📁 ファイル
-        </h2>
+    <div id="chatMessages"></div>
 
-        <p>
-            ファイル共有機能は準備中です。
-        </p>
+    <input
+        id="chatInput"
+        placeholder="メッセージ">
 
-    </div>
+    <button onclick="sendMessage()">
+        送信
+    </button>
+</div>
 
     <div class="card">
+    <h2>📁 ファイル</h2>
 
-        <h2 class="section-title">
-            📝 課題
-        </h2>
+    <input
+        type="file"
+        id="fileInput">
 
-        <p>
-            まだ課題はありません。
-        </p>
+    <button onclick="uploadFile()">
+        アップロード
+    </button>
 
-    </div>
+    <div id="fileList"></div>
+</div>
+
+    <div class="card">
+    <h2>📝 課題</h2>
+
+    <input
+        id="assignmentTitle"
+        placeholder="課題名">
+
+    <textarea
+        id="assignmentDesc"
+        placeholder="内容"></textarea>
+
+    <button onclick="createAssignment()">
+        作成
+    </button>
+
+    <div id="assignmentList"></div>
+</div>
 
 </div>
 <footer>
@@ -167,7 +198,122 @@ const supabaseClient =
         "https://iuizsupfouqqzfgynpcw.supabase.co",
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE"
     );
+async function uploadFile(){
 
+    const file =
+        document.getElementById(
+            "fileInput"
+        ).files[0];
+
+    const path =
+        Date.now() +
+        "_" +
+        file.name;
+
+    await supabaseClient
+        .storage
+        .from("class-files")
+        .upload(path,file);
+
+}
+async function loadAnnouncements(){
+
+    const classCode =
+        new URLSearchParams(
+            location.search
+        ).get("code");
+
+    const { data } =
+        await supabaseClient
+        .from("announcements")
+        .select("*")
+        .eq("class_code", classCode)
+        .order("created_at",{
+            ascending:false
+        });
+
+    const list =
+        document.getElementById(
+            "announcementList"
+        );
+
+    list.innerHTML = "";
+
+    data.forEach(a=>{
+
+        list.innerHTML += `
+            <div class="card">
+                <h3>${a.title}</h3>
+                <p>${a.content}</p>
+                <small>${a.author}</small>
+            </div>
+        `;
+
+    });
+
+}
+
+async function postAnnouncement(){
+
+    const title =
+        document.getElementById(
+            "announcementTitle"
+        ).value;
+
+    const content =
+        document.getElementById(
+            "announcementContent"
+        ).value;
+
+    const classCode =
+        new URLSearchParams(
+            location.search
+        ).get("code");
+
+    const username =
+        currentUsername;
+
+    await supabaseClient
+        .from("announcements")
+        .insert([
+            {
+                class_code: classCode,
+                author: username,
+                title: title,
+                content: content
+            }
+        ]);
+
+    loadAnnouncements();
+}
+async function createAssignment(){
+
+    const classCode =
+        new URLSearchParams(
+            location.search
+        ).get("code");
+
+    await supabaseClient
+        .from("assignments")
+        .insert([
+            {
+                class_code: classCode,
+                title:
+                    document.getElementById(
+                        "assignmentTitle"
+                    ).value,
+
+                description:
+                    document.getElementById(
+                        "assignmentDesc"
+                    ).value,
+
+                created_by:
+                    currentUsername
+            }
+        ]);
+
+}
 async function loadClass(){
 
     const params =
@@ -221,6 +367,68 @@ async function loadClass(){
     document.title =
         cls.class_name +
         " - Classroomもどき()";
+}
+
+async function sendMessage(){
+
+    const message =
+        document.getElementById(
+            "chatInput"
+        ).value;
+
+    const classCode =
+        new URLSearchParams(
+            location.search
+        ).get("code");
+
+    await supabaseClient
+        .from("messages")
+        .insert([
+            {
+                class_code: classCode,
+                username: currentUsername,
+                message: message
+            }
+        ]);
+
+    document.getElementById(
+        "chatInput"
+    ).value = "";
+
+    loadMessages();
+}
+async function loadMessages(){
+
+    const classCode =
+        new URLSearchParams(
+            location.search
+        ).get("code");
+
+    const { data } =
+        await supabaseClient
+        .from("messages")
+        .select("*")
+        .eq("class_code", classCode)
+        .order("created_at");
+
+    const chat =
+        document.getElementById(
+            "chatMessages"
+        );
+
+    chat.innerHTML = "";
+
+    data.forEach(msg=>{
+
+        chat.innerHTML += `
+            <div>
+                <b>${msg.username}</b>
+                : ${msg.message}
+            </div>
+        `;
+
+    });
+
 }
 async function loadMembers(){
 
