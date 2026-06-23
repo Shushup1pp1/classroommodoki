@@ -84,7 +84,15 @@ footer{
     <div class="card">
 
         <h2>クラス情報</h2>
+        <div class="card">
 
+    <h2>👥 メンバー</h2>
+
+    <div id="memberList">
+        読み込み中...
+    </div>
+
+</div>
         <p>
             クラスコード:
             <span
@@ -214,9 +222,63 @@ async function loadClass(){
         cls.class_name +
         " - Classroomもどき()";
 }
+async function loadMembers(){
 
+    const params =
+        new URLSearchParams(
+            location.search
+        );
+
+    const classCode =
+        params.get("code");
+
+    const { data, error } =
+        await supabaseClient
+        .from("class_members")
+        .select("*")
+        .eq("class_code", classCode);
+
+    const memberList =
+        document.getElementById(
+            "memberList"
+        );
+
+    if(error){
+
+        console.error(error);
+
+        memberList.textContent =
+            "読み込み失敗";
+
+        return;
+    }
+
+    if(data.length === 0){
+
+        memberList.textContent =
+            "メンバーなし";
+
+        return;
+    }
+
+    memberList.innerHTML = "";
+
+    data.forEach(member => {
+
+        memberList.innerHTML += `
+            <div style="
+                padding:10px;
+                border-bottom:1px solid #eee;
+            ">
+                👤 ${member.username}
+            </div>
+        `;
+
+    });
+
+}
 loadClass();
-
+loadMembers();
 </script>
 
 </body>
