@@ -141,15 +141,6 @@ async function joinClass(){
         return;
     }
 
-    await supabaseClient
-        .from("class_members")
-        .insert([
-            {
-                class_code: classCode,
-                username: username
-            }
-        ]);
-
     alert("参加しました！");
 
     loadClasses();
@@ -244,14 +235,30 @@ async function createClass(){
         sessionData[0].username;
 
     const { error } =
-       await supabaseClient
-        .from("class_members")
-        .insert([
+    await supabaseClient
+    .from("classes")
+    .insert([
+        {
+            class_name: className,
+            class_code: classCode,
+            owner_username: username
+        }
+    ]);
+
+if(error){
+    console.error(error);
+    alert("作成失敗");
+    return;
+}
+
+await supabaseClient
+    .from("class_members")
+    .insert([
         {
             class_code: classCode,
             username: username
         }
-]);
+    ]);
 
     if(error){
         console.error(error);
