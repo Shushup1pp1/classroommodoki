@@ -391,21 +391,22 @@ async function loadClass(){
         return;
     }
 
-    const { data, error } =
-        await supabaseClient
-        .from("classes")
-        .select("*")
-        .eq("class_code", classCode);
+    const { error } =
+    await supabaseClient
+    .from("assignments")
+    .insert([
+        {
+            class_id: classCode,
+            title: document.getElementById(
+                "assignmentTitle"
+            ).value,
+            description: document.getElementById(
+                "assignmentDesc"
+            ).value
+        }
+    ]);
 
-    if(error || data.length === 0){
-
-        alert("クラスが見つかりませーん　ちゃんとホームから参加してね");
-
-        location.href =
-            "home.html";
-
-        return;
-    }
+console.log(error);
 
     const cls =
         data[0];
