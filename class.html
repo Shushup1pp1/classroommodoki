@@ -192,18 +192,47 @@ footer{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-
+let currentUsername = null;
+init();
 const supabaseClient =
     window.supabase.createClient(
         "https://iuizsupfouqqzfgynpcw.supabase.co",
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE"
     );
+async function loadCurrentUser(){
+
+    const sessionToken =
+        getCookie("session");
+
+    const { data } =
+        await supabaseClient
+        .from("sessions")
+        .select("*")
+        .eq("session_token", sessionToken);
+
+    if(!data || data.length === 0){
+
+        location.href = "login.html";
+        return;
+    }
+
+    currentUsername =
+        data[0].username;
+
+}
 async function uploadFile(){
 
     const file =
         document.getElementById(
             "fileInput"
         ).files[0];
+
+    if(!file){
+
+        alert("ファイルを選択してください");
+
+        return;
+    }
 
     const path =
         Date.now() +
@@ -215,6 +244,7 @@ async function uploadFile(){
         .from("class-files")
         .upload(path,file);
 
+    alert("アップロード完了");
 }
 async function loadAnnouncements(){
 
@@ -485,8 +515,19 @@ async function loadMembers(){
     });
 
 }
-loadClass();
-loadMembers();
+async function init(){
+
+    await loadCurrentUser();
+
+    await loadClass();
+
+    await loadMembers();
+
+    await loadAnnouncements();
+
+    await loadMessages();
+
+}
 </script>
 
 </body>
