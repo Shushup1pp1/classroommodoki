@@ -266,10 +266,14 @@ async function uploadFile(){
         "_" +
         file.name;
 
+   const { data, error } =
     await supabaseClient
-        .storage
-        .from("class-files")
-        .upload(path,file);
+    .storage
+    .from("class-files")
+    .upload(path,file);
+
+console.log(data);
+console.error(error);
 
     alert("アップロード完了");
 }
@@ -350,7 +354,8 @@ async function createAssignment(){
             location.search
         ).get("code");
 
-    await supabaseClient
+    const { error } =
+        await supabaseClient
         .from("assignments")
         .insert([
             {
@@ -363,12 +368,11 @@ async function createAssignment(){
                 description:
                     document.getElementById(
                         "assignmentDesc"
-                    ).value,
-
-                created_by:
-                    currentUsername
+                    ).value
             }
         ]);
+
+    console.log(error);
 
 }
 async function loadClass(){
@@ -383,7 +387,9 @@ async function loadClass(){
 
     if(!classCode){
 
-        alert("クラスコード読み込みエラーでーす　ちゃんとホームから参加してね");
+        alert(
+            "クラスコード読み込みエラー"
+        );
 
         location.href =
             "home.html";
@@ -391,22 +397,25 @@ async function loadClass(){
         return;
     }
 
-    const { error } =
-    await supabaseClient
-    .from("assignments")
-    .insert([
-        {
-            class_id: classCode,
-            title: document.getElementById(
-                "assignmentTitle"
-            ).value,
-            description: document.getElementById(
-                "assignmentDesc"
-            ).value
-        }
-    ]);
+    const { data, error } =
+        await supabaseClient
+        .from("classes")
+        .select("*")
+        .eq("class_code", classCode);
 
-console.log(error);
+    if(error){
+
+        console.error(error);
+        return;
+
+    }
+
+    if(!data || data.length === 0){
+
+        alert("クラスが見つかりません");
+        return;
+
+    }
 
     const cls =
         data[0];
@@ -425,6 +434,7 @@ console.log(error);
     document.title =
         cls.class_name +
         " - Classroomもどき()";
+
 }
 
 async function sendMessage(){
