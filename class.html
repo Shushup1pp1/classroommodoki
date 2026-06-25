@@ -257,25 +257,38 @@ async function uploadFile(){
     if(!file){
 
         alert("ファイルを選択してください");
-
         return;
+
     }
+
+    const extension =
+        file.name
+        .split(".")
+        .pop();
 
     const path =
         Date.now() +
-        "_" +
-        file.name;
+        "." +
+        extension;
 
-   const { data, error } =
-    await supabaseClient
-    .storage
-    .from("class-files")
-    .upload(path,file);
+    const { data, error } =
+        await supabaseClient
+        .storage
+        .from("class-files")
+        .upload(path,file);
 
-console.log(data);
-console.error(error);
+    console.log(data);
+    console.error(error);
+
+    if(error){
+
+        alert(error.message);
+        return;
+
+    }
 
     alert("アップロード完了");
+
 }
 async function loadAnnouncements(){
 
