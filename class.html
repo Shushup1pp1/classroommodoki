@@ -242,7 +242,26 @@ footer{
         作成
     </button>
 
-    <div id="assignmentList"></div>
+    <div id="assignmentList">
+        <div class="assignment-card">
+
+    <h3>📝 ${a.title}</h3>
+
+    <p>${a.description}</p>
+
+    <input
+        type="file"
+        id="file${a.id}">
+
+    <button
+        onclick="submitAssignment(${a.id})">
+
+        提出
+
+    </button>
+
+</div>
+    </div>
 </div>
 
 </div>
@@ -287,6 +306,74 @@ function getCookie(name){
 
     return null;
 
+}
+async function submitAssignment(assignmentId){
+
+    const input =
+        document.getElementById(
+            "file" + assignmentId
+        );
+
+    const file =
+        input.files[0];
+
+    if(!file){
+
+        alert("ファイルを選択してください");
+
+        return;
+
+    }
+
+    const classCode =
+        new URLSearchParams(
+            location.search
+        ).get("code");
+
+    const extension =
+        file.name.split(".").pop();
+
+    const path =
+        `submissions/${classCode}/assignment_${assignmentId}/${currentUsername}.${extension}`;
+
+    const { error } =
+        await supabaseClient
+        .storage
+        .from("class-files")
+        .upload(
+            path,
+            file,
+            {
+                upsert:true
+            }
+        );
+
+    if(error){
+
+        console.error(error);
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    await supabaseClient
+        .from("submissions")
+        .insert([
+            {
+                assignment_id:
+                    assignmentId,
+
+                username:
+                    currentUsername,
+
+                file_path:
+                    path
+            }
+        ]);
+
+    alert("提出完了！");
 }
 async function loadFiles(){
 
