@@ -77,6 +77,40 @@ footer{
     padding:30px;
     color:#666;
 }
+#fileList{
+    margin-top:15px;
+}
+
+.file-card{
+    background:#f8f9fa;
+    border:1px solid #e0e0e0;
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:10px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.file-name{
+    font-weight:bold;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.download-btn{
+    background:#4285f4;
+    color:white;
+    text-decoration:none;
+    padding:8px 12px;
+    border-radius:8px;
+    font-size:14px;
+}
+
+.download-btn:hover{
+    opacity:.9;
+}
 </style>
 </head>
 <body>
@@ -162,7 +196,9 @@ footer{
         アップロード
     </button>
 
-    <div id="fileList"></div>
+    <div id="fileList">
+    読み込み中...
+</div>
 </div>
 
     <div class="card">
@@ -224,6 +260,61 @@ function getCookie(name){
     }
 
     return null;
+
+}
+async function loadFiles(){
+
+    const fileList =
+        document.getElementById("fileList");
+
+    const { data, error } =
+        await supabaseClient
+        .storage
+        .from("class-files")
+        .list();
+
+    if(error){
+
+        console.error(error);
+
+        fileList.innerHTML =
+            "ファイル取得失敗";
+
+        return;
+    }
+
+    if(data.length === 0){
+
+        fileList.innerHTML =
+            "ファイルなし";
+
+        return;
+    }
+
+    fileList.innerHTML = "";
+
+    data.forEach(file => {
+
+        const { data: urlData } =
+            supabaseClient
+            .storage
+            .from("class-files")
+            .getPublicUrl(file.name);
+
+        fileList.innerHTML += `
+            <div class="card">
+                📄 ${file.name}
+                <br>
+                <a
+                    href="${urlData.publicUrl}"
+                    target="_blank"
+                >
+                    ダウンロード
+                </a>
+            </div>
+        `;
+
+    });
 
 }
 async function loadCurrentUser(){
@@ -288,7 +379,7 @@ async function uploadFile(){
     }
 
     alert("アップロード完了");
-
+    loadFiles();
 }
 async function loadAnnouncements(){
 
@@ -578,6 +669,7 @@ async function init(){
 
     await loadMessages();
 
+    await loadFiles();
 }
 </script>
 
