@@ -111,6 +111,32 @@ footer{
 .download-btn:hover{
     opacity:.9;
 }
+
+.assignment-card{
+
+    background:white;
+
+    border:1px solid #ddd;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    margin-top:10px;
+
+}
+
+.assignment-card h3{
+
+    margin-bottom:8px;
+
+}
+
+.assignment-card small{
+
+    color:#777;
+
+}
 </style>
 </head>
 <body>
@@ -488,7 +514,68 @@ async function createAssignment(){
             }
         ]);
 
-    console.log(error);
+    loadAssignments();
+
+}
+async function loadAssignments(){
+
+    const classCode =
+        new URLSearchParams(location.search)
+        .get("code");
+
+    const { data, error } =
+        await supabaseClient
+        .from("assignments")
+        .select("*")
+        .eq("class_code", classCode)
+        .order("created_at",{
+            ascending:false
+        });
+
+    if(error){
+
+        console.error(error);
+        return;
+
+    }
+
+    const list =
+        document.getElementById(
+            "assignmentList"
+        );
+
+    list.innerHTML = "";
+
+    if(data.length === 0){
+
+        list.innerHTML =
+            "課題はありません";
+
+        return;
+
+    }
+
+    data.forEach(a=>{
+
+        list.innerHTML += `
+        <div class="assignment-card">
+
+            <h3>📝 ${a.title}</h3>
+
+            <p>${a.description}</p>
+
+            <small>
+                作成日:
+                ${
+                    new Date(a.created_at)
+                    .toLocaleString("ja-JP")
+                }
+            </small>
+
+        </div>
+        `;
+
+    });
 
 }
 async function loadClass(){
@@ -682,6 +769,8 @@ async function init(){
     await loadMessages();
 
     await loadFiles();
+
+    await loadAssignments();
 }
 </script>
 
