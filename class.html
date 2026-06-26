@@ -267,11 +267,15 @@ async function loadFiles(){
     const fileList =
         document.getElementById("fileList");
 
-    const { data, error } =
-        await supabaseClient
-        .storage
-        .from("class-files")
-        .list();
+    const classCode =
+    new URLSearchParams(location.search)
+    .get("code");
+
+const { data, error } =
+    await supabaseClient
+    .storage
+    .from("class-files")
+    .list(classCode);
 
     if(error){
 
@@ -299,7 +303,9 @@ async function loadFiles(){
             supabaseClient
             .storage
             .from("class-files")
-            .getPublicUrl(file.name);
+            .getPublicUrl(
+    classCode + "/" + file.name
+)
 
         fileList.innerHTML += `
             <div class="card">
@@ -309,7 +315,7 @@ async function loadFiles(){
                     href="${urlData.publicUrl}"
                     target="_blank"
                 >
-                    ダウンロード
+                    ダウンロード(画像右クリック(長押し)→名前を付けて画像を保存)
                 </a>
             </div>
         `;
@@ -357,10 +363,16 @@ async function uploadFile(){
         .split(".")
         .pop();
 
-    const path =
-        Date.now() +
-        "." +
-        extension;
+    const classCode =
+    new URLSearchParams(location.search)
+    .get("code");
+
+const path =
+    classCode +
+    "/" +
+    Date.now() +
+    "." +
+    extension;
 
     const { data, error } =
         await supabaseClient
