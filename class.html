@@ -360,7 +360,7 @@ async function submitAssignment(assignmentId){
 
     await supabaseClient
         .from("submissions")
-        .insert([
+        .upsert([
             {
                 assignment_id:
                     assignmentId,
