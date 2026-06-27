@@ -459,16 +459,38 @@ async function loadCurrentUser(){
 }
 async function loadAssignments(){
 
-    ...
+    const classCode =
+        new URLSearchParams(location.search)
+        .get("code");
+
+    const { data, error } =
+        await supabaseClient
+        .from("assignments")
+        .select("*")
+        .eq("class_code", classCode)
+        .order("created_at", {
+            ascending: false
+        });
+
+    if(error){
+        console.error(error);
+        return;
+    }
 
     const list =
-        document.getElementById(
-            "assignmentList"
-        );
+        document.getElementById("assignmentList");
 
     list.innerHTML = "";
 
-    data.forEach(a=>{
+    if(data.length === 0){
+
+        list.innerHTML = "課題はありません";
+
+        return;
+
+    }
+
+    data.forEach(a => {
 
         list.innerHTML += `
         <div class="assignment-card">
