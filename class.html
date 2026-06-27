@@ -604,67 +604,33 @@ async function createAssignment(){
     loadAssignments();
 
 }
-async function loadAssignments(){
+list.innerHTML += `
+<div class="assignment-card">
 
-    const classCode =
-        new URLSearchParams(location.search)
-        .get("code");
+    <h3>📝 ${a.title}</h3>
 
-    const { data, error } =
-        await supabaseClient
-        .from("assignments")
-        .select("*")
-        .eq("class_code", classCode)
-        .order("created_at",{
-            ascending:false
-        });
+    <p>${a.description}</p>
 
-    if(error){
+    <small>
+        作成日:
+        ${new Date(a.created_at).toLocaleString("ja-JP")}
+    </small>
 
-        console.error(error);
-        return;
+    <br><br>
 
-    }
+    <input
+        type="file"
+        id="file${a.id}">
 
-    const list =
-        document.getElementById(
-            "assignmentList"
-        );
+    <button
+        onclick="submitAssignment(${a.id})">
 
-    list.innerHTML = "";
+        📤 提出
 
-    if(data.length === 0){
+    </button>
 
-        list.innerHTML =
-            "課題はありません";
-
-        return;
-
-    }
-
-    data.forEach(a=>{
-
-        list.innerHTML += `
-        <div class="assignment-card">
-
-            <h3>📝 ${a.title}</h3>
-
-            <p>${a.description}</p>
-
-            <small>
-                作成日:
-                ${
-                    new Date(a.created_at)
-                    .toLocaleString("ja-JP")
-                }
-            </small>
-
-        </div>
-        `;
-
-    });
-
-}
+</div>
+`;
 async function loadClass(){
 
     const params =
