@@ -457,6 +457,65 @@ async function loadCurrentUser(){
         data[0].username;
 
 }
+async function loadAssignments(){
+
+    const classCode =
+        new URLSearchParams(location.search)
+        .get("code");
+
+    const { data, error } =
+        await supabaseClient
+        .from("assignments")
+        .select("*")
+        .eq("class_code", classCode)
+        .order("created_at", {
+            ascending: false
+        });
+
+    if(error){
+        console.error(error);
+        return;
+    }
+
+    const list =
+        document.getElementById("assignmentList");
+
+    list.innerHTML = "";
+
+    if(data.length === 0){
+        list.innerHTML = "課題はありません";
+        return;
+    }
+
+    data.forEach(a => {
+
+        list.innerHTML += `
+        <div class="assignment-card">
+
+            <h3>📝 ${a.title}</h3>
+
+            <p>${a.description}</p>
+
+            <small>
+                ${new Date(a.created_at).toLocaleString("ja-JP")}
+            </small>
+
+            <br><br>
+
+            <input
+                type="file"
+                id="file${a.id}">
+
+            <button onclick="submitAssignment(${a.id})">
+                📤 提出
+            </button>
+
+        </div>
+        `;
+
+    });
+
+}
 async function uploadFile(){
 
     const file =
