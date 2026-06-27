@@ -476,11 +476,9 @@ async function loadAssignments(){
         console.error(error);
         return;
     }
-
+    list.innerHTML = "";
     const list =
         document.getElementById("assignmentList");
-
-    list.innerHTML = "";
 
     if(data.length === 0){
         list.innerHTML = "課題はありません";
