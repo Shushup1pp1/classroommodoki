@@ -293,23 +293,7 @@ footer{
     id="assignmentDesc"
     placeholder="内容"></textarea>
 
-<comment select
-    id="assignmentType"
-    onchange="changeAssignmentType()">
 
-    <option value="file">
-        📄 ファイル提出
-    </option>
-
-    <option value="survey">
-        📋 アンケート
-    </option>
-
-    <option value="quiz">
-        ❓ クイズ
-    </option>
-
-</comment select>
 
 <div id="assignmentEditor">
 
@@ -349,6 +333,23 @@ footer{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+//<select
+//    id="assignmentType"
+//    onchange="changeAssignmentType()">
+//
+//    <option value="file">
+//        📄 ファイル提出
+//    </option>
+
+//    <option value="survey">
+//        📋 アンケート
+//    </option>
+
+//    <option value="quiz">
+//        ❓ クイズ
+//    </option>
+
+// </select>
 let currentUsername = null;
 const supabaseClient =
     window.supabase.createClient(
