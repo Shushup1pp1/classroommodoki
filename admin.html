@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>
+Classroomもどき() Admin
+</title>
+
+<style>
+
+body{
+
+    margin:0;
+
+    font-family:sans-serif;
+
+    background:#f5f5f5;
+
+}
+
+header{
+
+    background:#d32f2f;
+
+    color:white;
+
+    padding:15px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.container{
+
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:20px;
+
+}
+
+.card{
+
+    background:white;
+
+    border-radius:12px;
+
+    padding:20px;
+
+    margin-bottom:20px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+
+}
+
+.button{
+
+    padding:10px 18px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+.primary{
+
+    background:#1976d2;
+
+    color:white;
+
+}
+
+.danger{
+
+    background:#d32f2f;
+
+    color:white;
+
+}
+
+.admin-grid{
+
+    display:grid;
+
+    grid-template-columns:250px 1fr;
+
+    gap:20px;
+
+}
+
+.sidebar button{
+
+    width:100%;
+
+    margin-bottom:10px;
+
+}
+
+#content{
+
+    min-height:500px;
+
+}
+
+input{
+
+    width:100%;
+
+    padding:10px;
+
+    margin-top:10px;
+
+    margin-bottom:10px;
+
+    box-sizing:border-box;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>
+🛠 Classroomもどき() Admin
+</h1>
+
+<button
+class="button"
+onclick="location.href='home.html'">
+
+← ホーム
+
+</button>
+
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>
+クラスを開く
+</h2>
+
+<input
+id="classCode"
+placeholder="クラスコード">
+
+<button
+class="button primary"
+onclick="openClass()">
+
+開く
+
+</button>
+
+</div>
+
+<div
+id="adminPanel"
+style="display:none;">
+
+<div class="admin-grid">
+
+<div class="sidebar">
+
+<button
+class="button"
+onclick="showMembers()">
+
+👥 メンバー
+
+</button>
+
+<button
+class="button"
+onclick="showChat()">
+
+💬 チャット
+
+</button>
+
+<button
+class="button"
+onclick="showAnnouncements()">
+
+📢 お知らせ
+
+</button>
+
+<button
+class="button"
+onclick="showFiles()">
+
+📁 ファイル
+
+</button>
+
+<button
+class="button"
+onclick="showAssignments()">
+
+📝 課題
+
+</button>
+
+</div>
+
+<div
+id="content"
+class="card">
+
+クラスを開いてください。
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+import { createClient } from '@supabase/supabase-js'
+
+// Create a single supabase client for interacting with your database
+const supabase = createClient('https://iuizsupfouqqzfgynpcw.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE')
+let currentClassCode=null;
+function getCookie(name){
+
+    const cookies =
+        document.cookie.split("; ");
+
+    for(const cookie of cookies){
+
+        const parts =
+            cookie.split("=");
+
+        if(parts[0] === name){
+
+            return parts.slice(1).join("=");
+
+        }
+
+    }
+
+    return null;
+
+}
+async function checkAdmin(){
+
+    const sessionToken =
+        getCookie("session");
+
+    if(!sessionToken){
+
+        alert("ログインしてください");
+
+        location.href = "login.html";
+
+        return;
+
+    }
+
+    // セッション取得
+    const { data: sessionData, error: sessionError } =
+        await supabaseClient
+        .from("sessions")
+        .select("*")
+        .eq("session_token", sessionToken);
+
+    if(sessionError || sessionData.length === 0){
+
+        alert("セッションが無効です");
+
+        location.href = "login.html";
+
+        return;
+
+    }
+
+    const username =
+        sessionData[0].username;
+
+    // ユーザー取得
+    const { data: userData, error: userError } =
+        await supabaseClient
+        .from("users")
+        .select("role")
+        .eq("username", username);
+
+    if(userError || userData.length === 0){
+
+        alert("ユーザーが存在しません");
+
+        location.href = "home.html";
+
+        return;
+
+    }
+
+    if(userData[0].role !== "admin"){
+
+        alert("管理者権限がありません");
+
+        location.href = "home.html";
+
+        return;
+
+    }
+
+    console.log("✅ 管理者認証成功");
+
+}
+
+async function openClass(){
+
+    currentClassCode=
+        document.getElementById(
+            "classCode"
+        ).value;
+
+    if(currentClassCode===""){
+
+        alert("クラスコードを入力してください");
+
+        return;
+
+    }
+
+    document.getElementById(
+        "adminPanel"
+    ).style.display="block";
+
+    showMembers();
+
+}
+
+function showMembers(){
+
+    document.getElementById(
+        "content"
+    ).innerHTML=`
+        <h2>👥 メンバー管理</h2>
+
+        読み込み中...
+    `;
+
+}
+
+function showChat(){
+
+    document.getElementById(
+        "content"
+    ).innerHTML=`
+        <h2>💬 チャット管理</h2>
+
+        読み込み中...
+    `;
+
+}
+
+function showAnnouncements(){
+
+    document.getElementById(
+        "content"
+    ).innerHTML=`
+        <h2>📢 お知らせ管理</h2>
+
+        読み込み中...
+    `;
+
+}
+
+function showFiles(){
+
+    document.getElementById(
+        "content"
+    ).innerHTML=`
+        <h2>📁 ファイル管理</h2>
+
+        読み込み中...
+    `;
+
+}
+
+function showAssignments(){
+
+    document.getElementById(
+        "content"
+    ).innerHTML=`
+        <h2>📝 課題管理</h2>
+
+        読み込み中...
+    `;
+
+}
+
+checkAdmin();
+
+</script>
+
+</body>
+</html>
