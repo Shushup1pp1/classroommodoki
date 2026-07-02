@@ -283,6 +283,37 @@ footer{
         id="assignmentDesc"
         placeholder="内容"></textarea>
 
+    <h2>📝 課題</h2>
+
+<input
+    id="assignmentTitle"
+    placeholder="課題名">
+
+<textarea
+    id="assignmentDesc"
+    placeholder="内容"></textarea>
+
+<select
+    id="assignmentType"
+    onchange="changeAssignmentType()">
+
+    <option value="file">
+        📄 ファイル提出
+    </option>
+
+    <option value="survey">
+        📋 アンケート
+    </option>
+
+    <option value="quiz">
+        ❓ クイズ
+    </option>
+
+</select>
+
+<div id="assignmentEditor">
+
+</div>
     <button onclick="createAssignment()">
         作成
     </button>
@@ -972,6 +1003,8 @@ async function init(){
     await loadFiles();
 
     await loadAssignments();
+
+    changeAssignmentType();
 }
 </script>
 
