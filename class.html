@@ -934,6 +934,38 @@ async function loadMessages(){
     });
 
 }
+function subscribeMessages(){
+
+    const classCode =
+        new URLSearchParams(location.search)
+        .get("code");
+
+    supabaseClient
+        .channel("messages-" + classCode)
+        .on(
+            "postgres_changes",
+            {
+                event: "*",
+                schema: "public",
+                table: "messages"
+            },
+            payload => {
+
+                // このクラスだけ更新
+                if(
+                    payload.new?.class_code === classCode ||
+                    payload.old?.class_code === classCode
+                ){
+
+                    loadMessages();
+
+                }
+
+            }
+        )
+        .subscribe();
+
+}
 async function loadMembers(){
 
     const params =
@@ -1006,6 +1038,8 @@ async function init(){
     await loadAssignments();
 
     changeAssignmentType();
+
+    subscribeMessages();
 }
 </script>
 
