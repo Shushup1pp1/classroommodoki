@@ -456,6 +456,8 @@ async function submitAssignment(assignmentId){
         );
 
     const file =
+        data.filter(file =>
+        file.name !== ".emptyFolderPlaceholder"
         input.files[0];
 
     if(!file){
