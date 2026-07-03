@@ -488,15 +488,83 @@ function showAnnouncements(){
 
 }
 
-function showFiles(){
+async function showFiles(){
 
-    document.getElementById(
-        "content"
-    ).innerHTML=`
-        <h2>📁 ファイル管理</h2>
+    const content =
+        document.getElementById("content");
 
-        読み込み中...
-    `;
+    content.innerHTML =
+        "<h2>📁 ファイル管理</h2>読み込み中...";
+
+    const { data, error } =
+        await supabaseClient
+        .from("files")
+        .select("*")
+        .eq("class_code", currentClassCode)
+        .order("created_at",{
+            ascending:false
+        });
+
+    if(error){
+
+        console.error(error);
+
+        content.innerHTML="読み込み失敗";
+
+        return;
+
+    }
+
+    if(data.length===0){
+
+        content.innerHTML=`
+            <h2>📁 ファイル管理</h2>
+            ファイルはありません
+        `;
+
+        return;
+
+    }
+
+    content.innerHTML="<h2>📁 ファイル管理</h2>";
+
+    data.forEach(file=>{
+
+        content.innerHTML += `
+            <div class="card">
+
+                <h3>📄 ${file.filename}</h3>
+
+                <p>投稿者：${file.uploaded_by}</p>
+
+                <small>
+
+                ${new Date(file.created_at)
+                    .toLocaleString("ja-JP")}
+
+                </small>
+
+                <br><br>
+
+                <button
+                    onclick="downloadFile('${file.file_url}')">
+
+                    ⬇ ダウンロード
+
+                </button>
+
+                <button
+                    class="danger"
+                    onclick="deleteFile(${file.id},'${file.file_url}')">
+
+                    🗑 削除
+
+                </button>
+
+            </div>
+        `;
+
+    });
 
 }
 
