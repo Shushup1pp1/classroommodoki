@@ -568,15 +568,113 @@ async function showFiles(){
 
 }
 
-function showAssignments(){
+async function showAssignments(){
 
-    document.getElementById(
-        "content"
-    ).innerHTML=`
-        <h2>📝 課題管理</h2>
+    const content =
+        document.getElementById("content");
 
-        読み込み中...
-    `;
+    content.innerHTML =
+        "<h2>📝 課題管理</h2>読み込み中...";
+
+    const { data, error } =
+        await supabaseClient
+        .from("assignments")
+        .select("*")
+        .eq("class_code", currentClassCode)
+        .order("created_at",{
+            ascending:false
+        });
+
+    if(error){
+
+        console.error(error);
+
+        content.innerHTML =
+            "読み込み失敗";
+
+        return;
+
+    }
+
+    if(data.length===0){
+
+        content.innerHTML=`
+            <h2>📝 課題管理</h2>
+
+            課題はありません
+        `;
+
+        return;
+
+    }
+
+    content.innerHTML =
+        "<h2>📝 課題管理</h2>";
+
+    data.forEach(a=>{
+
+        content.innerHTML += `
+            <div class="card">
+
+                <h3>📝 ${a.title}</h3>
+
+                <p>${a.description}</p>
+
+                <small>
+
+                    ${new Date(a.created_at)
+                        .toLocaleString("ja-JP")}
+
+                </small>
+
+                <br><br>
+
+                <button
+                    onclick="editAssignment(${a.id})">
+
+                    ✏ 編集
+
+                </button>
+
+                <button
+                    class="danger"
+                    onclick="deleteAssignment(${a.id})">
+
+                    🗑 削除
+
+                </button>
+
+            </div>
+        `;
+
+    });
+
+}
+async function deleteAssignment(id){
+
+    if(!confirm("この課題を削除しますか？")){
+
+        return;
+
+    }
+
+    const { error } =
+        await supabaseClient
+        .from("assignments")
+        .delete()
+        .eq("id",id);
+
+    if(error){
+
+        console.error(error);
+
+        alert("削除失敗");
+
+        return;
+
+    }
+
+    showAssignments();
 
 }
 
