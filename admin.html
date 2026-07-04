@@ -356,18 +356,185 @@ async function openClass(){
 
 }
 
-function showMembers(){
+async function showMembers(){
 
-    document.getElementById(
-        "content"
-    ).innerHTML=`
-        <h2>👥 メンバー管理</h2>
+    const content =
+        document.getElementById("content");
 
-        読み込み中...
-    `;
+    content.innerHTML =
+        "<h2>👥 ユーザー管理</h2>読み込み中...";
+
+    const { data, error } =
+        await supabaseClient
+        .from("class_members")
+        .select("*")
+        .eq("class_code", currentClassCode);
+
+    if(error){
+
+        console.error(error);
+
+        content.innerHTML =
+            "読み込み失敗";
+
+        return;
+
+    }
+
+    content.innerHTML =
+        "<h2>👥 ユーザー管理</h2>";
+
+    data.forEach(member=>{
+
+        content.innerHTML += `
+            <div class="card">
+
+                <h3>
+                    👤 ${member.username}
+                </h3>
+
+                <button
+                    onclick="muteUser('${member.username}')">
+
+                    🔇 ミュート
+
+                </button>
+
+                <button
+                    onclick="kickUser('${member.username}')">
+
+                    👢 キック
+
+                </button>
+
+                <button
+                    onclick="banUser('${member.username}')">
+
+                    🔨 BAN
+
+                </button>
+
+                <br><br>
+
+                <button
+                    onclick="setRole('${member.username}','teacher')">
+
+                    👨‍🏫 Teacher
+
+                </button>
+
+                <button
+                    onclick="setRole('${member.username}','admin')">
+
+                    👑 Admin
+
+                </button>
+
+                <button
+                    onclick="setRole('${member.username}','student')">
+
+                    🎓 Student
+
+                </button>
+
+            </div>
+        `;
+
+    });
 
 }
+async function kickUser(username){
 
+    if(!confirm(
+        username +
+        " をキックしますか？"
+    )){
+        return;
+    }
+
+    const { error } =
+        await supabaseClient
+        .from("class_members")
+        .delete()
+        .eq("class_code", currentClassCode)
+        .eq("username", username);
+
+    if(error){
+
+        console.error(error);
+
+        alert("失敗");
+
+        return;
+
+    }
+
+    showMembers();
+
+}
+async function setRole(username, role){
+
+    if(!confirm(
+        username +
+        " を " +
+        role +
+        " に変更しますか？"
+    )){
+        return;
+    }
+
+    const { error } =
+        await supabaseClient
+        .from("users")
+        .update({
+            role: role
+        })
+        .eq("username", username);
+
+    if(error){
+
+        console.error(error);
+
+        alert("変更失敗");
+
+        return;
+
+    }
+
+    alert("変更しました");
+
+}
+async function muteUser(username){
+
+    const { data } =
+        await supabaseClient
+        .from("users")
+        .select("chat_muted")
+        .eq("username", username)
+        .single();
+
+    const { error } =
+        await supabaseClient
+        .from("users")
+        .update({
+
+            chat_muted:
+                !data.chat_muted
+
+        })
+        .eq("username", username);
+
+    if(error){
+
+        console.error(error);
+
+        return;
+
+    }
+
+    showMembers();
+
+}
 async function showChat(){
 
     const content =
