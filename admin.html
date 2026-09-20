@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -8,125 +9,203 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>
-Classroomもどき() Admin
-</title>
+<title>Classroomもどき() Admin</title>
 
 <style>
 
+*{
+    box-sizing:border-box;
+}
+
 body{
-
     margin:0;
-
-    font-family:sans-serif;
-
-    background:#f5f5f5;
-
+    font-family:Arial,sans-serif;
+    background:#f5f7fb;
+    color:#202124;
 }
 
 header{
-
     background:#d32f2f;
-
     color:white;
-
-    padding:15px;
-
+    padding:15px 20px;
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
+    gap:20px;
+}
 
+header h1{
+    margin:0;
+    font-size:1.35rem;
+}
+
+.header-info{
+    display:flex;
+    align-items:center;
+    gap:12px;
 }
 
 .container{
-
-    max-width:1200px;
-
+    max-width:1400px;
     margin:auto;
-
     padding:20px;
-
 }
 
 .card{
-
     background:white;
-
     border-radius:12px;
-
     padding:20px;
-
     margin-bottom:20px;
-
-    box-shadow:0 2px 8px rgba(0,0,0,.1);
-
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
 .button{
-
-    padding:10px 18px;
-
+    padding:10px 16px;
     border:none;
-
     border-radius:8px;
-
     cursor:pointer;
+    background:#e9eef6;
+    margin:3px;
+    font-size:.95rem;
+}
 
+.button:hover{
+    opacity:.85;
 }
 
 .primary{
-
     background:#1976d2;
-
     color:white;
-
 }
 
 .danger{
-
     background:#d32f2f;
-
     color:white;
+}
 
+.success{
+    background:#2e7d32;
+    color:white;
+}
+
+.warning{
+    background:#ed6c02;
+    color:white;
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    padding:10px;
+    margin-top:8px;
+    margin-bottom:10px;
+    box-sizing:border-box;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+textarea{
+    min-height:100px;
+    resize:vertical;
 }
 
 .admin-grid{
-
     display:grid;
-
-    grid-template-columns:250px 1fr;
-
+    grid-template-columns:240px 1fr;
     gap:20px;
+    align-items:start;
+}
 
+.sidebar{
+    position:sticky;
+    top:20px;
 }
 
 .sidebar button{
-
     width:100%;
-
-    margin-bottom:10px;
-
+    margin-bottom:8px;
+    text-align:left;
 }
 
 #content{
-
     min-height:500px;
-
 }
 
-input{
+.admin-card{
+    background:white;
+    border-radius:12px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
 
-    width:100%;
+.admin-card h3{
+    margin-top:0;
+}
 
-    padding:10px;
+.status{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:999px;
+    background:#eef2f7;
+    margin:3px 3px 3px 0;
+    font-size:.9rem;
+}
 
-    margin-top:10px;
+.status-admin{
+    background:#fde7e7;
+    color:#b71c1c;
+}
 
-    margin-bottom:10px;
+.status-teacher{
+    background:#e3f2fd;
+    color:#1565c0;
+}
 
-    box-sizing:border-box;
+.status-student{
+    background:#e8f5e9;
+    color:#2e7d32;
+}
+
+.status-muted{
+    background:#fff3cd;
+    color:#8a6100;
+}
+
+.empty{
+    padding:30px;
+    text-align:center;
+    color:#777;
+}
+
+.toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    margin-bottom:15px;
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    color:#777;
+}
+
+@media(max-width:800px){
+
+    .admin-grid{
+        grid-template-columns:1fr;
+    }
+
+    .sidebar{
+        position:static;
+    }
+
+    header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
 
 }
 
@@ -138,114 +217,182 @@ input{
 
 <header>
 
-<h1>
-🛠 Classroomもどき() Admin
-</h1>
+    <div>
+        <h1>🛡 Classroomもどき() Admin</h1>
 
-<button
-class="button"
-onclick="location.href='home.html'">
+        <small>
+            v0.1β
+        </small>
+    </div>
 
-← ホーム
+    <div class="header-info">
 
-</button>
+        <span id="loginUser">
+            認証中...
+        </span>
+
+        <button
+            class="button"
+            onclick="location.href='home.html'">
+
+            ← ホーム
+
+        </button>
+
+    </div>
 
 </header>
 
+
 <div class="container">
 
-<div class="card">
+    <!-- クラス選択 -->
 
-<h2>
-クラスを開く
-</h2>
+    <div class="card">
 
-<input
-id="classCode"
-placeholder="クラスコード">
+        <h2>🏫 管理するクラス</h2>
 
-<button
-class="button primary"
-onclick="openClass()">
+        <input
+            id="classCode"
+            placeholder="クラスコード">
 
-開く
+        <button
+            class="button primary"
+            onclick="openClass()">
 
-</button>
+            クラスを開く
+
+        </button>
+
+        <span id="currentClassText"></span>
+
+    </div>
+
+
+    <div
+        id="adminPanel"
+        style="display:none;">
+
+        <div class="admin-grid">
+
+
+            <!-- サイドバー -->
+
+            <aside class="sidebar">
+
+                <div class="card">
+
+                    <button
+                        class="button"
+                        onclick="showDashboard()">
+
+                        📊 ダッシュボード
+
+                    </button>
+
+                    <button
+                        class="button"
+                        onclick="showMembers()">
+
+                        👥 ユーザー管理
+
+                    </button>
+
+                    <button
+                        class="button"
+                        onclick="showChat()">
+
+                        💬 チャット
+
+                    </button>
+
+                    <button
+                        class="button"
+                        onclick="showAnnouncements()">
+
+                        📢 お知らせ
+
+                    </button>
+
+                    <button
+                        class="button"
+                        onclick="showFiles()">
+
+                        📁 ファイル
+
+                    </button>
+
+                    <button
+                        class="button"
+                        onclick="showAssignments()">
+
+                        📝 課題
+
+                    </button>
+
+                </div>
+
+            </aside>
+
+
+            <!-- メイン -->
+
+            <main
+                id="content"
+                class="card">
+
+                <div class="empty">
+
+                    クラスを開いてください。
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
 
 </div>
 
-<div
-id="adminPanel"
-style="display:none;">
 
-<div class="admin-grid">
+<footer>
 
-<div class="sidebar">
+    Classroomもどき() Admin<br>
 
-<button
-class="button"
-onclick="showMembers()">
+    Powered by Supabase & Vercel<br>
 
-👥 メンバー
+    ©2026 AquaWorks All rights reserved.
 
-</button>
+</footer>
 
-<button
-class="button"
-onclick="showChat()">
 
-💬 チャット
-
-</button>
-
-<button
-class="button"
-onclick="showAnnouncements()">
-
-📢 お知らせ
-
-</button>
-
-<button
-class="button"
-onclick="showFiles()">
-
-📁 ファイル
-
-</button>
-
-<button
-class="button"
-onclick="showAssignments()">
-
-📝 課題
-
-</button>
-
-</div>
-
-<div
-id="content"
-class="card">
-
-クラスを開いてください。
-
-</div>
-
-</div>
-
-</div>
-
-</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
 <script>
-// Create a single supabase client for interacting with your database
-const supabaseClient = 
-      window.supabase.createClient(
-            'https://iuizsupfouqqzfgynpcw.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1aXpzdXBmb3VxcXpmZ3lucGN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NTk1ODMsImV4cCI6MjA5NzQzNTU4M30.ZjrGFqeXX2evo22zEM4A5YuCCbR9DNCH_0HIagfTBPE'
-      );
-let currentClassCode=null;
+
+/* =========================================
+   Supabase
+========================================= */
+
+const supabaseClient =
+    window.supabase.createClient(
+
+        "https://iuizsupfouqqzfgynpcw.supabase.co",
+
+        "YOUR_ANON_KEY"
+
+    );
+
+
+let currentClassCode = null;
+let currentUsername = null;
+
+
+/* =========================================
+   Cookie
+========================================= */
+
 function getCookie(name){
 
     const cookies =
@@ -258,7 +405,9 @@ function getCookie(name){
 
         if(parts[0] === name){
 
-            return parts.slice(1).join("=");
+            return parts
+                .slice(1)
+                .join("=");
 
         }
 
@@ -267,6 +416,34 @@ function getCookie(name){
     return null;
 
 }
+
+
+/* =========================================
+   HTML escape
+========================================= */
+
+function escapeHTML(value){
+
+    if(value === null || value === undefined){
+
+        return "";
+
+    }
+
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* =========================================
+   Admin認証
+========================================= */
+
 async function checkAdmin(){
 
     const sessionToken =
@@ -276,203 +453,629 @@ async function checkAdmin(){
 
         alert("ログインしてください");
 
-        location.href = "login.html";
+        location.href =
+            "login.html";
 
-        return;
+        return false;
 
     }
 
-    // セッション取得
-    const { data: sessionData, error: sessionError } =
+
+    const {
+        data:sessionData,
+        error:sessionError
+    } =
         await supabaseClient
         .from("sessions")
-        .select("*")
-        .eq("session_token", sessionToken);
+        .select("username")
+        .eq(
+            "session_token",
+            sessionToken
+        )
+        .limit(1);
 
-    if(sessionError || sessionData.length === 0){
+
+    if(
+        sessionError ||
+        !sessionData ||
+        sessionData.length === 0
+    ){
 
         alert("セッションが無効です");
 
-        location.href = "login.html";
+        location.href =
+            "login.html";
 
-        return;
+        return false;
 
     }
 
-    const username =
+
+    currentUsername =
         sessionData[0].username;
 
-    // ユーザー取得
-    const { data: userData, error: userError } =
+
+    const {
+        data:userData,
+        error:userError
+    } =
         await supabaseClient
         .from("users")
-        .select("role")
-        .eq("username", username);
+        .select("username,role")
+        .eq(
+            "username",
+            currentUsername
+        )
+        .limit(1);
 
-    if(userError || userData.length === 0){
+
+    if(
+        userError ||
+        !userData ||
+        userData.length === 0
+    ){
 
         alert("ユーザーが存在しません");
 
-        location.href = "home.html";
+        location.href =
+            "home.html";
 
-        return;
+        return false;
 
     }
 
-    if(userData[0].role !== "admin"){
+
+    if(
+        userData[0].role !== "admin"
+    ){
 
         alert("管理者権限がありません");
 
-        location.href = "home.html";
+        location.href =
+            "home.html";
 
-        return;
+        return false;
 
     }
 
-    console.log("✅ 管理者認証成功");
+
+    document.getElementById(
+        "loginUser"
+    ).textContent =
+        "👑 " + currentUsername;
+
+
+    console.log(
+        "✅ 管理者認証成功"
+    );
+
+    return true;
 
 }
+
+
+/* =========================================
+   クラスを開く
+========================================= */
 
 async function openClass(){
 
-    currentClassCode=
+    const input =
         document.getElementById(
             "classCode"
-        ).value;
+        );
 
-    if(currentClassCode===""){
+    currentClassCode =
+        input.value
+        .trim()
+        .toUpperCase();
 
-        alert("クラスコードを入力してください");
+
+    if(!currentClassCode){
+
+        alert(
+            "クラスコードを入力してください"
+        );
 
         return;
 
     }
 
-    document.getElementById(
-        "adminPanel"
-    ).style.display="block";
 
-    showMembers();
+    /*
+       クラスが存在するか確認
+    */
 
-}
-
-async function showMembers(){
-
-    const content =
-        document.getElementById("content");
-
-    content.innerHTML =
-        "<h2>👥 ユーザー管理</h2>読み込み中...";
-
-    const { data, error } =
+    const {
+        data,
+        error
+    } =
         await supabaseClient
-        .from("class_members")
-        .select("*")
-        .eq("class_code", currentClassCode);
+        .from("classes")
+        .select("class_code")
+        .eq(
+            "class_code",
+            currentClassCode
+        )
+        .limit(1);
+
 
     if(error){
 
         console.error(error);
 
-        content.innerHTML =
-            "読み込み失敗";
+        alert(
+            "クラス情報の取得に失敗しました"
+        );
 
         return;
 
     }
 
+
+    if(!data || data.length === 0){
+
+        alert(
+            "そのクラスは存在しません"
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "adminPanel"
+    ).style.display =
+        "block";
+
+
+    document.getElementById(
+        "currentClassText"
+    ).textContent =
+        "現在: " + currentClassCode;
+
+
+    showDashboard();
+
+}
+
+
+/* =========================================
+   Dashboard
+========================================= */
+
+async function showDashboard(){
+
+    const content =
+        document.getElementById(
+            "content"
+        );
+
+
+    content.innerHTML =
+        "<h2>📊 ダッシュボード</h2>" +
+        "<p>読み込み中...</p>";
+
+
+    const [
+        members,
+        messages,
+        files,
+        assignments
+    ] =
+        await Promise.all([
+
+            supabaseClient
+            .from("class_members")
+            .select("id",{
+                count:"exact",
+                head:true
+            })
+            .eq(
+                "class_code",
+                currentClassCode
+            ),
+
+            supabaseClient
+            .from("messages")
+            .select("id",{
+                count:"exact",
+                head:true
+            })
+            .eq(
+                "class_code",
+                currentClassCode
+            ),
+
+            supabaseClient
+            .from("files")
+            .select("id",{
+                count:"exact",
+                head:true
+            })
+            .eq(
+                "class_code",
+                currentClassCode
+            ),
+
+            supabaseClient
+            .from("assignments")
+            .select("id",{
+                count:"exact",
+                head:true
+            })
+            .eq(
+                "class_code",
+                currentClassCode
+            )
+
+        ]);
+
+
+    content.innerHTML = `
+
+        <h2>📊 ダッシュボード</h2>
+
+        <p>
+            管理中のクラス:
+            <strong>
+                ${escapeHTML(currentClassCode)}
+            </strong>
+        </p>
+
+        <div class="admin-card">
+            👥 メンバー
+            <h2>${members.count ?? 0}</h2>
+        </div>
+
+        <div class="admin-card">
+            💬 メッセージ
+            <h2>${messages.count ?? 0}</h2>
+        </div>
+
+        <div class="admin-card">
+            📁 ファイル
+            <h2>${files.count ?? 0}</h2>
+        </div>
+
+        <div class="admin-card">
+            📝 課題
+            <h2>${assignments.count ?? 0}</h2>
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================
+   Users
+========================================= */
+
+async function showMembers(){
+
+    const content =
+        document.getElementById(
+            "content"
+        );
+
+
+    content.innerHTML =
+        "<h2>👥 ユーザー管理</h2>" +
+        "<p>読み込み中...</p>";
+
+
+    const {
+        data:members,
+        error:memberError
+    } =
+        await supabaseClient
+        .from("class_members")
+        .select("username")
+        .eq(
+            "class_code",
+            currentClassCode
+        );
+
+
+    if(memberError){
+
+        console.error(memberError);
+
+        content.innerHTML =
+            "メンバー取得失敗";
+
+        return;
+
+    }
+
+
+    if(!members.length){
+
+        content.innerHTML = `
+
+            <h2>👥 ユーザー管理</h2>
+
+            <div class="empty">
+                メンバーはいません
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const usernames =
+        members.map(
+            m => m.username
+        );
+
+
+    const {
+        data:users,
+        error:userError
+    } =
+        await supabaseClient
+        .from("users")
+        .select(
+            "username,role,chat_muted"
+        )
+        .in(
+            "username",
+            usernames
+        );
+
+
+    if(userError){
+
+        console.error(userError);
+
+        content.innerHTML =
+            "ユーザー情報の取得に失敗しました";
+
+        return;
+
+    }
+
+
     content.innerHTML =
         "<h2>👥 ユーザー管理</h2>";
 
-    data.forEach(member=>{
+
+    users.forEach(user=>{
+
+        let roleText =
+            "🎓 Student";
+
+        let roleClass =
+            "status-student";
+
+
+        if(user.role === "teacher"){
+
+            roleText =
+                "👨‍🏫 Teacher";
+
+            roleClass =
+                "status-teacher";
+
+        }
+
+
+        if(user.role === "admin"){
+
+            roleText =
+                "👑 Admin";
+
+            roleClass =
+                "status-admin";
+
+        }
+
+
+        const muteText =
+            user.chat_muted
+            ? "🔇 ミュート中"
+            : "💬 通常";
+
 
         content.innerHTML += `
-            <div class="card">
+
+            <div class="admin-card">
 
                 <h3>
-                    👤 ${member.username}
+                    👤
+                    ${escapeHTML(user.username)}
                 </h3>
 
-                <button
-                    onclick="muteUser('${member.username}')">
+                <span
+                    class="status ${roleClass}">
+                    ${roleText}
+                </span>
 
-                    🔇 ミュート
+                <span
+                    class="status ${
+                        user.chat_muted
+                        ? "status-muted"
+                        : ""
+                    }">
+                    ${muteText}
+                </span>
+
+                <hr>
+
+                <button
+                    class="button warning"
+                    onclick="muteUser(
+                        '${escapeHTML(user.username)}'
+                    )">
+
+                    🔇
+                    ${
+                        user.chat_muted
+                        ? "ミュート解除"
+                        : "ミュート"
+                    }
 
                 </button>
 
+
                 <button
-                    onclick="kickUser('${member.username}')">
+                    class="button"
+                    onclick="kickUser(
+                        '${escapeHTML(user.username)}'
+                    )">
 
                     👢 キック
 
                 </button>
 
+
                 <button
-                    onclick="banUser('${member.username}')">
+                    class="button danger"
+                    onclick="banUser(
+                        '${escapeHTML(user.username)}'
+                    )">
 
                     🔨 BAN
 
                 </button>
 
-                <br><br>
+
+                <br>
+
 
                 <button
-                    onclick="setRole('${member.username}','teacher')">
+                    class="button"
+                    onclick="setRole(
+                        '${escapeHTML(user.username)}',
+                        'teacher'
+                    )">
 
                     👨‍🏫 Teacher
 
                 </button>
 
+
                 <button
-                    onclick="setRole('${member.username}','admin')">
+                    class="button"
+                    onclick="setRole(
+                        '${escapeHTML(user.username)}',
+                        'admin'
+                    )">
 
                     👑 Admin
 
                 </button>
 
+
                 <button
-                    onclick="setRole('${member.username}','student')">
+                    class="button"
+                    onclick="setRole(
+                        '${escapeHTML(user.username)}',
+                        'student'
+                    )">
 
                     🎓 Student
 
                 </button>
 
             </div>
+
         `;
 
     });
 
 }
+
+
+/* =========================================
+   Kick
+========================================= */
+
 async function kickUser(username){
+
+    if(username === currentUsername){
+
+        alert(
+            "自分自身をキックすることはできません"
+        );
+
+        return;
+
+    }
+
 
     if(!confirm(
         username +
-        " をキックしますか？"
+        " をこのクラスからキックしますか？"
     )){
+
         return;
+
     }
 
-    const { error } =
+
+    const {
+        error
+    } =
         await supabaseClient
         .from("class_members")
         .delete()
-        .eq("class_code", currentClassCode)
-        .eq("username", username);
+        .eq(
+            "class_code",
+            currentClassCode
+        )
+        .eq(
+            "username",
+            username
+        );
+
 
     if(error){
 
         console.error(error);
 
-        alert("失敗");
+        alert("キック失敗");
 
         return;
 
     }
 
+
+    alert(
+        username +
+        " をキックしました"
+    );
+
+
     showMembers();
 
 }
-async function setRole(username, role){
+
+
+/* =========================================
+   Role
+========================================= */
+
+async function setRole(
+    username,
+    role
+){
+
+    if(username === currentUsername){
+
+        alert(
+            "自分自身のRoleは変更できません"
+        );
+
+        return;
+
+    }
+
 
     if(!confirm(
         username +
@@ -480,40 +1083,83 @@ async function setRole(username, role){
         role +
         " に変更しますか？"
     )){
+
         return;
+
     }
 
-    const { error } =
+
+    const {
+        error
+    } =
         await supabaseClient
         .from("users")
         .update({
-            role: role
+            role:role
         })
-        .eq("username", username);
+        .eq(
+            "username",
+            username
+        );
+
 
     if(error){
 
         console.error(error);
 
-        alert("変更失敗");
+        alert("Role変更失敗");
 
         return;
 
     }
 
-    alert("変更しました");
+
+    alert(
+        "Roleを変更しました"
+    );
+
+
+    showMembers();
 
 }
+
+
+/* =========================================
+   Mute
+========================================= */
+
 async function muteUser(username){
 
-    const { data } =
+    const {
+        data,
+        error:selectError
+    } =
         await supabaseClient
         .from("users")
         .select("chat_muted")
-        .eq("username", username)
+        .eq(
+            "username",
+            username
+        )
         .single();
 
-    const { error } =
+
+    if(selectError){
+
+        console.error(selectError);
+
+        alert(
+            "ユーザー情報を取得できませんでした"
+        );
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
         await supabaseClient
         .from("users")
         .update({
@@ -522,111 +1168,262 @@ async function muteUser(username){
                 !data.chat_muted
 
         })
-        .eq("username", username);
+        .eq(
+            "username",
+            username
+        );
+
 
     if(error){
 
         console.error(error);
 
+        alert("ミュート変更失敗");
+
         return;
 
     }
 
+
     showMembers();
 
 }
+
+
+/* =========================================
+   BAN
+========================================= */
+
+async function banUser(username){
+
+    if(username === currentUsername){
+
+        alert(
+            "自分自身をBANすることはできません"
+        );
+
+        return;
+
+    }
+
+
+    if(!confirm(
+        username +
+        " をBANしますか？"
+    )){
+
+        return;
+
+    }
+
+
+    /*
+       class_bans テーブルを使用。
+
+       必要な列:
+
+       id
+       class_code
+       username
+       created_at
+    */
+
+
+    const {
+        error:banError
+    } =
+        await supabaseClient
+        .from("class_bans")
+        .insert({
+
+            class_code:
+                currentClassCode,
+
+            username:
+                username
+
+        });
+
+
+    if(banError){
+
+        console.error(banError);
+
+        alert(
+            "BAN失敗\n" +
+            banError.message
+        );
+
+        return;
+
+    }
+
+
+    await supabaseClient
+    .from("class_members")
+    .delete()
+    .eq(
+        "class_code",
+        currentClassCode
+    )
+    .eq(
+        "username",
+        username
+    );
+
+
+    alert(
+        username +
+        " をBANしました"
+    );
+
+
+    showMembers();
+
+}
+
+
+/* =========================================
+   Chat
+========================================= */
+
 async function showChat(){
 
     const content =
-        document.getElementById("content");
+        document.getElementById(
+            "content"
+        );
+
 
     content.innerHTML =
-        "<h2>💬 チャット管理</h2>読み込み中...";
+        "<h2>💬 チャット管理</h2>" +
+        "<p>読み込み中...</p>";
 
-    const { data, error } =
+
+    const {
+        data,
+        error
+    } =
         await supabaseClient
         .from("messages")
         .select("*")
-        .eq("class_code", currentClassCode)
-        .order("created_at", {
-            ascending:false
-        });
+        .eq(
+            "class_code",
+            currentClassCode
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
 
     if(error){
 
         console.error(error);
 
         content.innerHTML =
-            "読み込み失敗";
+            "チャット取得失敗";
 
         return;
 
     }
 
-    if(data.length===0){
+
+    if(!data.length){
 
         content.innerHTML = `
+
             <h2>💬 チャット管理</h2>
 
-            メッセージはありません
+            <div class="empty">
+                メッセージはありません
+            </div>
+
         `;
 
         return;
 
     }
 
+
     content.innerHTML =
         "<h2>💬 チャット管理</h2>";
+
 
     data.forEach(msg=>{
 
         content.innerHTML += `
-            <div class="card">
 
-                <b>${msg.username}</b>
+            <div class="admin-card">
 
-                <br>
+                <h3>
+                    💬
+                    ${escapeHTML(msg.username)}
+                </h3>
 
-                ${msg.message}
-
-                <br><br>
+                <p>
+                    ${escapeHTML(msg.message)}
+                </p>
 
                 <small>
-
-                    ${new Date(msg.created_at)
-                        .toLocaleString("ja-JP")}
-
+                    ${new Date(
+                        msg.created_at
+                    ).toLocaleString("ja-JP")}
                 </small>
 
                 <br><br>
 
                 <button
                     class="button danger"
-                    onclick="deleteMessage(${msg.id})">
+                    onclick="deleteMessage(
+                        ${msg.id}
+                    )">
 
                     🗑 削除
 
                 </button>
 
             </div>
+
         `;
 
     });
 
 }
+
+
+/* =========================================
+   Delete Message
+========================================= */
+
 async function deleteMessage(id){
 
     if(!confirm(
         "このメッセージを削除しますか？"
     )){
+
         return;
+
     }
 
-    const { error } =
+
+    const {
+        error
+    } =
         await supabaseClient
         .from("messages")
         .delete()
-        .eq("id", id);
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "class_code",
+            currentClassCode
+        );
+
 
     if(error){
 
@@ -638,216 +1435,779 @@ async function deleteMessage(id){
 
     }
 
-    alert("削除しました");
 
     showChat();
 
 }
-function showAnnouncements(){
 
-    document.getElementById(
-        "content"
-    ).innerHTML=`
-        <h2>📢 お知らせ管理</h2>
 
-        読み込み中...
-    `;
+/* =========================================
+   Announcements
+========================================= */
 
-}
-
-async function showFiles(){
+async function showAnnouncements(){
 
     const content =
-        document.getElementById("content");
+        document.getElementById(
+            "content"
+        );
+
 
     content.innerHTML =
-        "<h2>📁 ファイル管理</h2>読み込み中...";
+        "<h2>📢 お知らせ管理</h2>" +
+        "<p>読み込み中...</p>";
 
-    const { data, error } =
+
+    /*
+       announcements テーブル想定:
+
+       id
+       class_code
+       title
+       content
+       author
+       created_at
+    */
+
+
+    const {
+        data,
+        error
+    } =
         await supabaseClient
-        .from("files")
+        .from("announcements")
         .select("*")
-        .eq("class_code", currentClassCode)
-        .order("created_at",{
-            ascending:false
-        });
+        .eq(
+            "class_code",
+            currentClassCode
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
 
     if(error){
 
         console.error(error);
 
-        content.innerHTML="読み込み失敗";
+        content.innerHTML = `
 
-        return;
+            <h2>📢 お知らせ管理</h2>
 
-    }
+            <div class="empty">
+                お知らせを取得できませんでした。
+                <br>
+                announcementsテーブルの列を確認してください。
+            </div>
 
-    if(data.length===0){
-
-        content.innerHTML=`
-            <h2>📁 ファイル管理</h2>
-            ファイルはありません
         `;
 
         return;
 
     }
 
-    content.innerHTML="<h2>📁 ファイル管理</h2>";
 
-    data.forEach(file=>{
+    if(!data.length){
+
+        content.innerHTML = `
+
+            <h2>📢 お知らせ管理</h2>
+
+            <div class="empty">
+                お知らせはありません
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    content.innerHTML =
+        "<h2>📢 お知らせ管理</h2>";
+
+
+    data.forEach(a=>{
 
         content.innerHTML += `
-            <div class="card">
 
-                <h3>📄 ${file.filename}</h3>
+            <div class="admin-card">
 
-                <p>投稿者：${file.uploaded_by}</p>
+                <h3>
+                    📢
+                    ${escapeHTML(a.title)}
+                </h3>
+
+                <p>
+                    ${escapeHTML(a.content)}
+                </p>
 
                 <small>
-
-                ${new Date(file.created_at)
-                    .toLocaleString("ja-JP")}
-
+                    ${escapeHTML(a.author || "")}
+                    <br>
+                    ${new Date(
+                        a.created_at
+                    ).toLocaleString("ja-JP")}
                 </small>
 
                 <br><br>
 
                 <button
-                    onclick="downloadFile('${file.file_url}')">
-
-                    ⬇ ダウンロード
-
-                </button>
-
-                <button
-                    class="danger"
-                    onclick="deleteFile(${file.id},'${file.file_url}')">
+                    class="button danger"
+                    onclick="deleteAnnouncement(
+                        ${a.id}
+                    )">
 
                     🗑 削除
 
                 </button>
 
             </div>
+
         `;
 
     });
 
 }
 
-async function showAssignments(){
+
+/* =========================================
+   Delete Announcement
+========================================= */
+
+async function deleteAnnouncement(id){
+
+    if(!confirm(
+        "このお知らせを削除しますか？"
+    )){
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+        .from("announcements")
+        .delete()
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "class_code",
+            currentClassCode
+        );
+
+
+    if(error){
+
+        console.error(error);
+
+        alert("削除失敗");
+
+        return;
+
+    }
+
+
+    showAnnouncements();
+
+}
+
+
+/* =========================================
+   Files
+========================================= */
+
+async function showFiles(){
 
     const content =
-        document.getElementById("content");
+        document.getElementById(
+            "content"
+        );
+
 
     content.innerHTML =
-        "<h2>📝 課題管理</h2>読み込み中...";
+        "<h2>📁 ファイル管理</h2>" +
+        "<p>読み込み中...</p>";
 
-    const { data, error } =
+
+    const {
+        data,
+        error
+    } =
         await supabaseClient
-        .from("assignments")
+        .from("files")
         .select("*")
-        .eq("class_code", currentClassCode)
-        .order("created_at",{
-            ascending:false
-        });
+        .eq(
+            "class_code",
+            currentClassCode
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
 
     if(error){
 
         console.error(error);
 
         content.innerHTML =
-            "読み込み失敗";
+            "ファイル取得失敗";
 
         return;
 
     }
 
-    if(data.length===0){
 
-        content.innerHTML=`
-            <h2>📝 課題管理</h2>
+    if(!data.length){
 
-            課題はありません
+        content.innerHTML = `
+
+            <h2>📁 ファイル管理</h2>
+
+            <div class="empty">
+                ファイルはありません
+            </div>
+
         `;
 
         return;
 
     }
 
-    content.innerHTML =
-        "<h2>📝 課題管理</h2>";
 
-    data.forEach(a=>{
+    content.innerHTML =
+        "<h2>📁 ファイル管理</h2>";
+
+
+    data.forEach(file=>{
 
         content.innerHTML += `
-            <div class="card">
 
-                <h3>📝 ${a.title}</h3>
+            <div class="admin-card">
 
-                <p>${a.description}</p>
+                <h3>
+                    📄
+                    ${escapeHTML(file.filename)}
+                </h3>
+
+                <p>
+                    投稿者：
+                    ${escapeHTML(file.uploaded_by)}
+                </p>
 
                 <small>
-
-                    ${new Date(a.created_at)
-                        .toLocaleString("ja-JP")}
-
+                    ${new Date(
+                        file.created_at
+                    ).toLocaleString("ja-JP")}
                 </small>
 
                 <br><br>
 
                 <button
-                    onclick="editAssignment(${a.id})">
+                    class="button"
+                    onclick="downloadFile(
+                        '${escapeHTML(file.file_url)}'
+                    )">
 
-                    ✏ 編集
+                    ⬇ ダウンロード
 
                 </button>
 
+
                 <button
-                    class="danger"
-                    onclick="deleteAssignment(${a.id})">
+                    class="button danger"
+                    onclick="deleteFile(
+                        ${file.id},
+                        '${escapeHTML(file.file_url)}'
+                    )">
 
                     🗑 削除
 
                 </button>
 
             </div>
+
         `;
 
     });
 
 }
-async function deleteAssignment(id){
 
-    if(!confirm("この課題を削除しますか？")){
+
+/* =========================================
+   Download File
+========================================= */
+
+function downloadFile(url){
+
+    if(!url){
+
+        alert(
+            "ファイルURLがありません"
+        );
 
         return;
 
     }
 
-    const { error } =
+
+    window.open(
+        url,
+        "_blank"
+    );
+
+}
+
+
+/* =========================================
+   Storage Path
+========================================= */
+
+function getStoragePath(fileUrl){
+
+    if(!fileUrl){
+
+        return null;
+
+    }
+
+
+    try{
+
+        const url =
+            new URL(fileUrl);
+
+        const marker =
+            "/object/public/class-files/";
+
+
+        const index =
+            url.pathname.indexOf(marker);
+
+
+        if(index !== -1){
+
+            return decodeURIComponent(
+                url.pathname.substring(
+                    index + marker.length
+                )
+            );
+
+        }
+
+
+        return null;
+
+    }catch(error){
+
+        console.error(error);
+
+        return null;
+
+    }
+
+}
+
+
+/* =========================================
+   Delete File
+========================================= */
+
+async function deleteFile(
+    id,
+    fileUrl
+){
+
+    if(!confirm(
+        "このファイルを削除しますか？"
+    )){
+
+        return;
+
+    }
+
+
+    const storagePath =
+        getStoragePath(fileUrl);
+
+
+    if(storagePath){
+
+        const {
+            error:storageError
+        } =
+            await supabaseClient
+            .storage
+            .from("class-files")
+            .remove([
+                storagePath
+            ]);
+
+
+        if(storageError){
+
+            console.error(
+                storageError
+            );
+
+            alert(
+                "Storageからの削除に失敗しました"
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    const {
+        error
+    } =
         await supabaseClient
-        .from("assignments")
+        .from("files")
         .delete()
-        .eq("id",id);
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "class_code",
+            currentClassCode
+        );
+
 
     if(error){
 
         console.error(error);
 
-        alert("削除失敗");
+        alert(
+            "ファイル情報の削除に失敗しました"
+        );
 
         return;
 
     }
 
+
+    showFiles();
+
+}
+
+
+/* =========================================
+   Assignments
+========================================= */
+
+async function showAssignments(){
+
+    const content =
+        document.getElementById(
+            "content"
+        );
+
+
+    content.innerHTML =
+        "<h2>📝 課題管理</h2>" +
+        "<p>読み込み中...</p>";
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+        .from("assignments")
+        .select("*")
+        .eq(
+            "class_code",
+            currentClassCode
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+
+    if(error){
+
+        console.error(error);
+
+        content.innerHTML =
+            "課題取得失敗";
+
+        return;
+
+    }
+
+
+    if(!data.length){
+
+        content.innerHTML = `
+
+            <h2>📝 課題管理</h2>
+
+            <div class="empty">
+                課題はありません
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    content.innerHTML =
+        "<h2>📝 課題管理</h2>";
+
+
+    data.forEach(a=>{
+
+        content.innerHTML += `
+
+            <div class="admin-card">
+
+                <h3>
+                    📝
+                    ${escapeHTML(a.title)}
+                </h3>
+
+                <p>
+                    ${escapeHTML(a.description)}
+                </p>
+
+                <small>
+                    作成日:
+                    ${new Date(
+                        a.created_at
+                    ).toLocaleString("ja-JP")}
+                </small>
+
+                <br><br>
+
+                <button
+                    class="button"
+                    onclick="editAssignment(
+                        ${a.id}
+                    )">
+
+                    ✏ 編集
+
+                </button>
+
+
+                <button
+                    class="button danger"
+                    onclick="deleteAssignment(
+                        ${a.id}
+                    )">
+
+                    🗑 削除
+
+                </button>
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+/* =========================================
+   Edit Assignment
+========================================= */
+
+async function editAssignment(id){
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+        .from("assignments")
+        .select(
+            "id,title,description"
+        )
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "class_code",
+            currentClassCode
+        )
+        .single();
+
+
+    if(error){
+
+        console.error(error);
+
+        alert(
+            "課題を取得できませんでした"
+        );
+
+        return;
+
+    }
+
+
+    const title =
+        prompt(
+            "課題タイトル",
+            data.title
+        );
+
+
+    if(title === null){
+
+        return;
+
+    }
+
+
+    const description =
+        prompt(
+            "課題内容",
+            data.description || ""
+        );
+
+
+    if(description === null){
+
+        return;
+
+    }
+
+
+    const {
+        error:updateError
+    } =
+        await supabaseClient
+        .from("assignments")
+        .update({
+
+            title:title,
+            description:description
+
+        })
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "class_code",
+            currentClassCode
+        );
+
+
+    if(updateError){
+
+        console.error(
+            updateError
+        );
+
+        alert(
+            "課題の編集に失敗しました"
+        );
+
+        return;
+
+    }
+
+
     showAssignments();
 
 }
 
-checkAdmin();
+
+/* =========================================
+   Delete Assignment
+========================================= */
+
+async function deleteAssignment(id){
+
+    if(!confirm(
+        "この課題を削除しますか？"
+    )){
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+        .from("assignments")
+        .delete()
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "class_code",
+            currentClassCode
+        );
+
+
+    if(error){
+
+        console.error(error);
+
+        alert(
+            "課題削除失敗"
+        );
+
+        return;
+
+    }
+
+
+    showAssignments();
+
+}
+
+
+/* =========================================
+   初期化
+========================================= */
+
+(async function(){
+
+    const success =
+        await checkAdmin();
+
+    if(success){
+
+        console.log(
+            "🛡 Admin Panel Ready"
+        );
+
+    }
+
+})();
 
 </script>
 
 </body>
 </html>
+```
